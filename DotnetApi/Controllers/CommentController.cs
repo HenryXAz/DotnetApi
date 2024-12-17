@@ -21,6 +21,10 @@ namespace DotnetApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            if(!ModelState.IsValid) {
+                return BadRequest();
+            }
+
             var comments = await _commentRepository.GetAllSync();
 
             return Ok(comments.Select(s => s.ToCommentDto()));
@@ -29,6 +33,10 @@ namespace DotnetApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
+            if(!ModelState.IsValid) {
+                return BadRequest();
+            }
+
             var comment = await _commentRepository.GetByIdAsync(id);
 
             if (comment == null) {
@@ -41,6 +49,10 @@ namespace DotnetApi.Controllers
         [HttpPost("{stockId}")]
         public async Task<IActionResult> Post([FromRoute] int stockId, [FromBody] CreateCommentRequestDto commentRequestDto)
         {
+            if(!ModelState.IsValid) {
+                return BadRequest();
+            }
+
             if (!await _stockRepository.StockExists(stockId)) {
                 return BadRequest("Stock does not exists");
             }
@@ -54,6 +66,10 @@ namespace DotnetApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCommentRequestDto commentRequestDto)
         {
+            if(!ModelState.IsValid) {
+                return BadRequest();
+            }
+
             var comment = await _commentRepository.UpdateAsync(id, commentRequestDto);
 
             return (comment == null) ? NotFound() : Ok(comment);
@@ -62,6 +78,10 @@ namespace DotnetApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
+            if(!ModelState.IsValid) {
+                return BadRequest();
+            }
+
             var comment = await _commentRepository.DeleteAsync(id);
 
             return (comment == null) ? NotFound() : Ok(comment);              
