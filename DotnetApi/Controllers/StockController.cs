@@ -2,12 +2,14 @@ using DotnetApi.Dtos.Stock;
 using DotnetApi.Helpers;
 using DotnetApi.Interfaces;
 using DotnetApi.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DotnetApi.Controllers 
 {
     [Route("api/stocks")]
     [ApiController]
+    [Authorize]
     public class StockController : ControllerBase
     {
         private readonly IStockRepository _stockRepository;
@@ -47,7 +49,7 @@ namespace DotnetApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult >Post([FromBody] CreateStockRequestDto stockDto)
+        public async Task<IActionResult> Post([FromBody] CreateStockRequestDto stockDto)
         {
             if (!ModelState.IsValid) {
                 return BadRequest();

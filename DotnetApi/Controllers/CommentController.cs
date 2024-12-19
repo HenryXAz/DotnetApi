@@ -1,12 +1,15 @@
 using DotnetApi.Dtos.Comment;
 using DotnetApi.Interfaces;
 using DotnetApi.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DotnetApi.Controllers
 {
+
     [Route("/api/comments")]
     [ApiController]
+    [Authorize]
     public class CommentController : ControllerBase
     {
         private readonly ICommentRepository _commentRepository;
