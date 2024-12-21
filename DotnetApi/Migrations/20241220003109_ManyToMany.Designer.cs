@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DotnetApi.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20241218054951_RoleSeed")]
-    partial class RoleSeed
+    [Migration("20241220003109_ManyToMany")]
+    partial class ManyToMany
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -119,6 +119,27 @@ namespace DotnetApi.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("DotnetApi.Models.Portfolio", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("StockId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.HasKey("UserId", "StockId");
+
+                    b.HasIndex("StockId");
+
+                    b.ToTable("Portfolios");
+                });
+
             modelBuilder.Entity("DotnetApi.Models.Stock", b =>
                 {
                     b.Property<int>("Id")
@@ -182,13 +203,13 @@ namespace DotnetApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "ec344229-00d7-4d06-9348-c988cca6b9c5",
+                            Id = "87799ce5-3614-4f69-9522-3f3d2c0a2fa6",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "1ef71392-f3bf-43f7-b914-ad5bfca6cacb",
+                            Id = "16cb64c5-83e3-455d-80de-443c4b1ed87e",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -309,6 +330,25 @@ namespace DotnetApi.Migrations
                     b.Navigation("Stock");
                 });
 
+            modelBuilder.Entity("DotnetApi.Models.Portfolio", b =>
+                {
+                    b.HasOne("DotnetApi.Models.Stock", "Stock")
+                        .WithMany("Portfolios")
+                        .HasForeignKey("StockId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DotnetApi.Models.AppUser", "AppUser")
+                        .WithMany("Portfolios")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Stock");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -360,9 +400,16 @@ namespace DotnetApi.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DotnetApi.Models.AppUser", b =>
+                {
+                    b.Navigation("Portfolios");
+                });
+
             modelBuilder.Entity("DotnetApi.Models.Stock", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Portfolios");
                 });
 #pragma warning restore 612, 618
         }
