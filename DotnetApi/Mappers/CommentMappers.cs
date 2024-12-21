@@ -13,6 +13,7 @@ namespace DotnetApi.Mappers
                 Content = commentModel.Content,
                 CreatedOn = commentModel.CreatedOn,
                 StockId = commentModel.StockId,
+                CreatedBy = commentModel.AppUser.UserName,
             };
         }
 

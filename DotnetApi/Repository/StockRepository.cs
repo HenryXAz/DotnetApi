@@ -40,7 +40,7 @@ namespace DotnetApi.Repository
 
         public async Task<List<Stock>> GetAllAsync(QueryObject query)
         {
-            var stocks = _dbContext.Stocks.Include(c => c.Comments).AsQueryable();
+            var stocks = _dbContext.Stocks.Include(c => c.Comments).ThenInclude(a => a.AppUser).AsQueryable();
 
 
             if (!string.IsNullOrWhiteSpace(query.CompanyName)) {
@@ -70,6 +70,11 @@ namespace DotnetApi.Repository
         public async Task<Stock?> GetByIdAsync(int id)
         {
             return await _dbContext.Stocks.Include(c => c.Comments).FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<Stock?> GetBySymbolAsync(string symbol)
+        {
+            return await _dbContext.Stocks.FirstOrDefaultAsync(s => s.Symbol == symbol);
         }
 
         public async Task<bool> StockExists(int id)
